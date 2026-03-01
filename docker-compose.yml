@@ -7,9 +7,11 @@ services:
     ports:
       - "1521:1521"
     environment:
-      ORACLE_PASSWORD: p123
+      ORACLE_PASSWORD: YourPassword123
       APP_USER: UCENTER_USER
-      APP_USER_PASSWORD: p123
+      APP_USER_PASSWORD: UCenterPassword123
+    volumes:
+      - ./db/init.sql:/container-entrypoint-initdb.d/init.sql
     restart: always
 
   php:
