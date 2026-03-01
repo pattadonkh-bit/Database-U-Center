@@ -1,23 +1,39 @@
-FROM php:8.2-apache
+FROM python:3.11-slim
 
-# ติดตั้ง dependency
-RUN apt-get update && apt-get install -y \
-    libaio1t64 \
-    unzip \
-    wget
+# ป้องกัน py cache
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# ดาวน์โหลด Oracle Instant Client
-WORKDIR /opt/oracle
+# ติดตั้ง dependency ที่ Oracle ต้องใช้
+RUN apt-get update && \
+    apt-get install -y unzip libaio1 && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN wget https://download.oracle.com/otn_software/linux/instantclient/instantclient-basiclite-linux.x64-21.13.0.0.0dbru.zip && \
-    unzip instantclient-basiclite-linux.x64-21.13.0.0.0dbru.zip && \
-    rm instantclient-basiclite-linux.x64-21.13.0.0.0dbru.zip
+# สร้างโฟลเดอร์ oracle
+RUN mkdir -p /opt/oracle
 
-# ตั้งค่า environment
-ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_21_13
+# copy zip เข้า container
+COPY instantclient-basiclite-linux.x64-23.26.1.0.0.zip /tmp/
 
-# ติดตั้ง OCI8 extension
-RUN echo "instantclient,/opt/oracle/instantclient_21_13" | pecl install oci8 && \
-    docker-php-ext-enable oci8
+# แตกไฟล์
+RUN unzip /tmp/instantclient-basiclite-linux.x64-23.26.1.0.0.zip -d /opt/oracle && \
+    rm /tmp/instantclient-basiclite-linux.x64-23.26.1.0.0.zip
 
-WORKDIR /var/www/html
+# ตั้ง path (โฟลเดอร์จะชื่อ instantclient_23_26)
+ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_23_26
+ENV PATH=$PATH:/opt/oracle/instantclient_23_26
+
+# ตั้ง working dir
+WORKDIR /app
+
+# install python packages
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# copy source code
+COPY . .
+
+# เปิด port (ถ้าใช้ Flask)
+EXPOSE 5000
+
+CMD ["python", "app.py"]
