@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-RUN apt-get update && apt-get install -y \
+RUN RUN apt-get update && apt-get install -y libaio1t64 unzip wget\
     libaio1 \
     unzip \
     wget
