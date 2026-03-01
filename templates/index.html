@@ -1,12 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-    <title>Restaurant App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta charset="UTF-8">
+<title>U-Center Food</title>
+<style>
+body{margin:0;font-family:Segoe UI;background:#f4f6f9;}
+header{background:#2c3e50;color:white;padding:15px 30px;
+display:flex;justify-content:space-between;}
+.container{padding:40px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.card{background:white;border-radius:15px;padding:20px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);cursor:pointer;}
+.price{color:red;font-weight:bold;}
+.hidden{display:none;}
+button{padding:6px 12px;margin-top:10px;}
+</style>
 </head>
+
 <body>
-    <h1>Restaurant System</h1>
-    <p>Welcome to the Restaurant Database</p>
-    <a href="/restaurants">View Restaurants (JSON)</a>
+
+<header>
+<div>U-Center Food</div>
+<div>
+🛒 (<span id="cartCount">0</span>)
+</div>
+</header>
+
+<div class="container">
+
+<h2>ร้านอาหาร</h2>
+<div class="grid" id="shopGrid"></div>
+
+<hr>
+
+<h2>เมนูอาหาร</h2>
+<div class="grid" id="menuGrid"></div>
+
+<hr>
+
+<h2>ตะกร้า</h2>
+<div id="cartItems"></div>
+<h3 id="totalPrice"></h3>
+
+</div>
+
+<script>
+
+let shops = [];
+let cart = [];
+
+async function loadShops(){
+    const res = await fetch("/restaurants");
+    shops = await res.json();
+
+    const grid = document.getElementById("shopGrid");
+    grid.innerHTML = "";
+
+    shops.forEach(s=>{
+        grid.innerHTML += `
+        <div class="card" onclick="loadMenu(${s.id})">
+            <h3>${s.name}</h3>
+        </div>`;
+    });
+}
+
+async function loadMenu(id){
+    const res = await fetch(`/menus/${id}`);
+    const menus = await res.json();
+
+    const grid = document.getElementById("menuGrid");
+    grid.innerHTML = "";
+
+    menus.forEach(m=>{
+        grid.innerHTML += `
+        <div class="card">
+            <h3>${m.name}</h3>
+            <p>${m.desc || ""}</p>
+            <p class="price">฿${m.price}</p>
+            <button onclick="addToCart('${m.name}',${m.price})">
+            เพิ่มลงตะกร้า</button>
+        </div>`;
+    });
+}
+
+function addToCart(name,price){
+    cart.push({name,price});
+    updateCart();
+}
+
+function updateCart(){
+    document.getElementById("cartCount").innerText = cart.length;
+
+    let total = 0;
+    let html = "";
+
+    cart.forEach((c,i)=>{
+        total += c.price;
+        html += `${c.name} - ฿${c.price}
+        <button onclick="removeItem(${i})">ลบ</button><br><br>`;
+    });
+
+    document.getElementById("cartItems").innerHTML = html;
+    document.getElementById("totalPrice").innerText = "รวม: ฿"+total;
+}
+
+function removeItem(i){
+    cart.splice(i,1);
+    updateCart();
+}
+
+loadShops();
+
+</script>
+
 </body>
 </html>
