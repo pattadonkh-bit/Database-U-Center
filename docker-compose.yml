@@ -14,12 +14,11 @@ services:
       - ./db/init.sql:/container-entrypoint-initdb.d/init.sql
     restart: always
 
-  php:
+  web:
     build: .
-    container_name: php-app
+    container_name: flask-app
     ports:
-      - "8080:80"
-    volumes:
-      - ./src:/var/www/html
+      - "5000:5000"
     depends_on:
       - oracle-db
+    restart: always
