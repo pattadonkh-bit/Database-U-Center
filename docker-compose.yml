@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  oracle-db:
+    image: gvenzl/oracle-free:latest
+    container_name: oracle-db
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: YourPassword123
+      APP_USER: UCENTER_USER
+      APP_USER_PASSWORD: UCenterPassword123
+    restart: always
+
+  php:
+    build: ./php
+    container_name: php-app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - oracle-db
