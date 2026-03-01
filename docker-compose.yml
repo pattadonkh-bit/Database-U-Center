@@ -13,11 +13,11 @@ services:
     restart: always
 
   php:
-    build: ./php
-    container_name: php-app
-    ports:
-      - "8080:80"
-    volumes:
-      - ./src:/var/www/html
-    depends_on:
-      - oracle-db
+  build: .
+  container_name: php-app
+  ports:
+    - "8080:80"
+  volumes:
+    - ./src:/var/www/html
+  depends_on:
+    - oracle-db
