@@ -1,24 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student List</title>
+    <title>Restaurant App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
-    <h1>Student List</h1>
-
-    <form action="/add" method="POST">
-        <input type="text" name="name" placeholder="Name" required>
-        <input type="number" name="age" placeholder="Age" required>
-        <button type="submit">Add</button>
-    </form>
-
-    <ul>
-        {% for student in students %}
-            <li>{{ student["name"] }} - {{ student["age"] }} years old</li>
-        {% endfor %}
-    </ul>
-
+    <h1>Restaurant System</h1>
+    <p>Welcome to the Restaurant Database</p>
+    <a href="/restaurants">View Restaurants (JSON)</a>
 </body>
 </html>
