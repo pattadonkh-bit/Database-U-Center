@@ -3,13 +3,13 @@ import sqlite3
 
 app = Flask(__name__)
 
-# ชื่อไฟล์ Database (SQLite จะสร้างให้ถ้ายังไม่มี)
-DATABASE = "database.db"
+# เปลี่ยนชื่อ Database ตรงนี้
+DATABASE = "first.db"
 
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row  # ทำให้เรียก column ด้วยชื่อได้
+    conn.row_factory = sqlite3.Row
     return conn
 
 
