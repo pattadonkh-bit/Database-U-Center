@@ -11,9 +11,8 @@ services:
       APP_USER: UCENTER_USER
       APP_USER_PASSWORD: UCenterPassword123
     restart: always
-
-  php:
-  build: .
+php:
+  build: ./php
   container_name: php-app
   ports:
     - "8080:80"
