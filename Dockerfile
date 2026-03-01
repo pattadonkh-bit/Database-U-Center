@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED=1
 
 # ติดตั้ง dependency ที่ Oracle ต้องใช้
 RUN apt-get update && \
-    apt-get install -y unzip libaio1 && \
+    apt-get install -y unzip libaio-dev && \
     rm -rf /var/lib/apt/lists/*
 
 # สร้างโฟลเดอร์ oracle
